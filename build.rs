@@ -15,5 +15,6 @@ fn main() {
         .file("src/avx512montmul.S")
         .file("src/innerproduct256.S")
         .file("src/modip256_mont.S")
+        .file("src/modmul256.S")
         .compile("avx512montmul");
 }

@@ -11,6 +11,7 @@ use rand::SeedableRng;
 extern "C" {
     fn avx512montmul(z: *mut u32, x: *const u32, y: *const u32, m: *const u64);
     fn modip256_mont(z: *mut u64, x: *const u64, y: *const u64, xy_len: u32, m: *const u64);
+    fn modmul256_mont(z: *mut u64, x: *const u64, y: *const u64, xy_len: u64, m: *const u64);
 }
 
 // Base Field
@@ -44,9 +45,9 @@ const FR: [u64; 6] = [
 
 fn main() {
     // test_file();
-    // test_memory();
-    // test_memory_par();
-    test_inner_prod();
+    test_memory();
+    test_memory_par();
+    // test_inner_prod();
 }
 
 fn test_inner_prod() {
@@ -152,7 +153,7 @@ fn test_file() {
     let simd_y: Vec<Fq> = read_vec_from_file("cache/y.ff");
     let mut simd_z: Vec<Fq> = read_vec_from_file("cache/z.ff");
     let start = std::time::Instant::now();
-    simd_batch_mul(&simd_x, &simd_y, simd_z.as_mut_slice());
+    simd_batch_mul_NEW(&simd_x, &simd_y, simd_z.as_mut_slice());
     let duration = start.elapsed();
     println!("simd_batch_mul took: {:?}", duration);
     black_box(&simd_z);
@@ -188,7 +189,7 @@ fn test_memory() {
     let simd_y: Vec<Fq> = y;
     let mut simd_z: Vec<Fq> = z; 
     let start = std::time::Instant::now();
-    simd_batch_mul(&simd_x, &simd_y, simd_z.as_mut_slice());
+    simd_batch_mul_NEW(&simd_x, &simd_y, simd_z.as_mut_slice());
     let duration = start.elapsed();
     println!("simd_batch_mul took: {:?}", duration);
     black_box(&simd_z);
@@ -199,7 +200,7 @@ fn test_memory() {
 
 /// Version keeps the values in memory.
 fn test_memory_par() {
-    const NUM_OPS: usize = 8 * 4_000_000;
+    const NUM_OPS: usize = 8 * 40_000_000;
 
     let x: Vec<Fq> = rand_vec(NUM_OPS);
     let y: Vec<Fq> = rand_vec(NUM_OPS);
@@ -280,46 +281,36 @@ fn simd_batch_mul(x: &[Fq], y: &[Fq], z: &mut [Fq]) {
     }
 }
 
+fn simd_batch_mul_NEW(x: &[Fq], y: &[Fq], z: &mut [Fq]) {
+    let len = x.len();
+    assert_eq!(len, y.len());
+    assert_eq!(len, z.len());
+
+    let simd_x = x.as_ptr() as *const u64;
+    let simd_y = y.as_ptr() as *const u64;
+    let simd_z = z.as_mut_ptr() as *mut u64;
+
+    unsafe {
+        modmul256_mont(simd_z, simd_x, simd_y, len as u64, FP.as_ptr());
+    }
+}
+
 fn simd_batch_mul_par(x: &[Fq], y: &[Fq], z: &mut [Fq]) {
     let len = x.len();
     assert_eq!(len, y.len());
     assert_eq!(len, z.len());
 
-    const BATCH_SIZE: usize = 8;
+    // const BATCH_SIZE: usize = 1 << 16;
 
     let num_threads = rayon::current_num_threads();
 
-    let mut chunk_size = len / num_threads;
-    chunk_size = chunk_size + (BATCH_SIZE - chunk_size % BATCH_SIZE); // round to nearest multiple of BATCH_SIZE
+    let chunk_size = len / num_threads;
 
-    let mut x_chunks: Vec<&[Fq]> = Vec::with_capacity(num_threads);
-    let mut y_chunks: Vec<&[Fq]> = Vec::with_capacity(num_threads);
-    let mut z_chunks: Vec<&mut [Fq]> = Vec::with_capacity(num_threads);
-
-    let mut x_remainder = x;
-    let mut y_remainder = y;
-    let mut z_remainder = z;
-    for _ in 0..(num_threads - 1) {
-        let x_split = x_remainder.split_at(chunk_size);
-        let y_split = y_remainder.split_at(chunk_size);
-        let z_split = z_remainder.split_at_mut(chunk_size);
-
-        x_chunks.push(x_split.0);
-        x_remainder = x_split.1;
-        y_chunks.push(y_split.0);
-        y_remainder = y_split.1;
-        z_chunks.push(z_split.0);
-        z_remainder = z_split.1;
-    }
-    x_chunks.push(x_remainder);
-    y_chunks.push(y_remainder);
-    z_chunks.push(z_remainder);
-
-    x_chunks.par_iter()
-        .zip(y_chunks.par_iter())
-        .zip(z_chunks.par_iter_mut())
+    x.par_chunks(chunk_size)
+        .zip(y.par_chunks(chunk_size))
+        .zip(z.par_chunks_mut(chunk_size))
         .for_each(|((xi, yi), zi)| {
-            simd_batch_mul(xi, yi, zi);
+            simd_batch_mul_NEW(xi, yi, zi);
         });
 }
 
