@@ -12,9 +12,11 @@ fn main() {
         panic!("NO AVX_512");
     }
     cc::Build::new()
-        .file("src/assembly/avx512montmul.S")
         .file("src/assembly/innerproduct256.S")
         .file("src/assembly/modip256_mont.S")
         .file("src/assembly/modmul256.S")
+        .file("src/assembly/modsum256.S")
+        .file("src/assembly/modadd256.S")
+        .file("src/assembly/modsub256.S")
         .compile("avx512montmul");
 }
