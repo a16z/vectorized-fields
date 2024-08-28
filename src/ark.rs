@@ -25,6 +25,16 @@ pub fn ark_batch_mul_par<F: PrimeField>(x: &[F], y: &[F], z: &mut [F]) {
 }
 
 pub fn ark_inner_product<F: PrimeField>(x: &[F], y: &[F]) -> F {
+    assert_eq!(x.len(), y.len());
+
+    let mut result = F::zero();
+    for i in 0..x.len() {
+        result += x[i] * y[i];
+    }
+    result
+}
+
+pub fn ark_inner_product_par<F: PrimeField>(x: &[F], y: &[F]) -> F {
     let len = x.len();
     assert_eq!(len, y.len());
 

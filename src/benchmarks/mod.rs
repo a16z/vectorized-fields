@@ -98,6 +98,40 @@ pub fn bench_mul_multi_threaded() {
     println!("AVX-512 {:.2}x speedup", speedup);
 }
 
+pub fn bench_inner_product_single_threaded() {
+    const NUM_OPS: usize = 32 * 4_000_000;
+
+    let x: Vec<Fr> = utils::rand_vec(NUM_OPS);
+    let y: Vec<Fr> = utils::rand_vec(NUM_OPS);
+
+    let total_size = std::mem::size_of_val(&x[..]) + std::mem::size_of_val(&y[..]);
+    println!("\nBench: Single-threaded inner product");
+    println!(
+        "| x + y | = {} GB",
+        total_size as f64 / (1024.0 * 1024.0 * 1024.0)
+    );
+
+    let start = std::time::Instant::now();
+    let ark_z = ark_inner_product(&x, &y);
+    let duration_ark = start.elapsed();
+    println!("Arkworks: {:?}", duration_ark);
+    black_box(&ark_z);
+
+    let start = std::time::Instant::now();
+    let simd_z = inner_product_bn254(&x, &y);
+    let duration_simd = start.elapsed();
+    println!("AVX-512: {:?}", duration_simd);
+    black_box(&simd_z);
+
+    let ark_duration = duration_ark.as_secs_f64();
+    let simd_duration = duration_simd.as_secs_f64();
+    let speedup = ark_duration / simd_duration;
+    println!("AVX-512 {:.2}x speedup", speedup);
+
+    assert_eq!(ark_z, simd_z);
+}
+
+
 pub fn bench_inner_product_multi_threaded() {
     const NUM_OPS: usize = 32 * 4_000_000;
 
@@ -112,7 +146,7 @@ pub fn bench_inner_product_multi_threaded() {
     );
 
     let start = std::time::Instant::now();
-    let ark_z = ark_inner_product(&x, &y);
+    let ark_z = ark_inner_product_par(&x, &y);
     let duration_ark = start.elapsed();
     println!("Arkworks: {:?}", duration_ark);
     black_box(&ark_z);
