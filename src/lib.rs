@@ -14,7 +14,103 @@ pub mod benchmarks;
 mod constants;
 mod utils;
 
-use crate::assembly::{modip256_mont, modmul256_mont};
+use crate::assembly::{modadd256, modip256_mont, modmul256_mont, modsub256, modsum256};
+
+pub fn add_vec_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
+    assert_eq!(x.len(), y.len());
+
+    unsafe {
+        modadd256(
+            z.as_mut_ptr() as *mut u64,
+            x.as_ptr() as *const u64,
+            y.as_ptr() as *const u64,
+            x.len() as u64,
+            constants::BN254_FR.as_ptr(),
+        )
+    }
+}
+
+pub fn add_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
+    let len = x.len();
+    assert_eq!(y.len(), len);
+    assert_eq!(z.len(), len);
+
+    let num_threads = rayon::current_num_threads();
+    let chunk_size = len / num_threads;
+
+    x.par_chunks(chunk_size)
+        .zip(y.par_chunks(chunk_size))
+        .zip(z.par_chunks_mut(chunk_size))
+        .for_each(|((x_chunk, y_chunk), z_chunk)| {
+            add_vec_bn254(x_chunk, y_chunk, z_chunk);
+        });
+}
+
+pub fn sub_vec_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
+    assert_eq!(x.len(), y.len());
+
+    unsafe {
+        modsub256(
+            z.as_mut_ptr() as *mut u64,
+            x.as_ptr() as *const u64,
+            y.as_ptr() as *const u64,
+            x.len() as u64,
+            constants::BN254_FR.as_ptr(),
+        )
+    }
+}
+
+pub fn sub_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
+    let len = x.len();
+    assert_eq!(y.len(), len);
+    assert_eq!(z.len(), len);
+
+    let num_threads = rayon::current_num_threads();
+    let chunk_size = len / num_threads;
+
+    x.par_chunks(chunk_size)
+        .zip(y.par_chunks(chunk_size))
+        .zip(z.par_chunks_mut(chunk_size))
+        .for_each(|((x_chunk, y_chunk), z_chunk)| {
+            sub_vec_bn254(x_chunk, y_chunk, z_chunk);
+        });
+}
+
+pub fn sum_vec_bn254(x: &[Fr], y: &[Fr]) -> Fr {
+    assert_eq!(x.len(), y.len());
+
+    let mut result = Fr::zero();
+    let simd_x = x.as_ptr() as *const u64;
+    let simd_y = y.as_ptr() as *const u64;
+    let simd_result = result.0 .0.as_mut_ptr() as *mut u64;
+
+    unsafe {
+        modsum256(
+            simd_result,
+            simd_x,
+            x.len() as u32,
+            constants::BN254_FR.as_ptr(),
+        );
+        modsum256(
+            simd_result,
+            simd_y,
+            y.len() as u32,
+            constants::BN254_FR.as_ptr(),
+        );
+    }
+
+    result
+}
+
+pub fn sum_vec_par_bn254(x: &[Fr], y: &[Fr]) -> Fr {
+    assert_eq!(x.len(), y.len());
+    let chunk_size = x.len() / rayon::current_num_threads();
+
+    x.par_chunks(chunk_size)
+        .zip(y.par_chunks(chunk_size))
+        .map(|(chunk_x, chunk_y)| sum_vec_bn254(chunk_x, chunk_y))
+        .sum::<Fr>()
+}
 
 pub fn mul_vec_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
     let len = x.len();
@@ -58,7 +154,7 @@ pub fn inner_product_bn254(x: &[Fr], y: &[Fr]) -> Fr {
     let simd_x = x.as_ptr() as *const u64;
     let simd_y = y.as_ptr() as *const u64;
     let mut collect = Fr::zero();
-    let mut simd_z = collect.0 .0.as_mut_ptr() as *mut u64;
+    let simd_z = collect.0 .0.as_mut_ptr() as *mut u64;
 
     let simd_len: u32 = x.len().try_into().unwrap();
 
