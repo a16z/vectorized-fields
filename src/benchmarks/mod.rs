@@ -131,7 +131,6 @@ pub fn bench_inner_product_single_threaded() {
     assert_eq!(ark_z, simd_z);
 }
 
-
 pub fn bench_inner_product_multi_threaded() {
     const NUM_OPS: usize = 32 * 4_000_000;
 
