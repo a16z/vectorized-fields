@@ -1,2 +1,4 @@
 /target
 /cache
+.aider*
+.DS_Store
