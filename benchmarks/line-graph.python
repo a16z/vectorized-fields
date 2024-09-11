@@ -1,4 +1,9 @@
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+# Add Space Grotesk font
+fm.fontManager.addfont('/System/Library/Fonts/Supplemental/Space Grotesk.ttf')
+plt.rcParams['font.family'] = 'Space Grotesk'
 
 # Define the data with speedup factors for each operation
 data = {
@@ -20,26 +25,31 @@ data = {
     }
 }
 
-# Set up the figure
-plt.figure(figsize=(10, 6))
+# Set up the figure with dark background
+plt.figure(figsize=(12, 7))
+plt.style.use('dark_background')
 
 # Plot each operation's speedup as a line on the same chart
 for operation, values in data.items():
-    plt.plot(values['Threads'], values['Speedup'], marker='o', label=operation)
+    plt.plot(values['Threads'], values['Speedup'], marker='o', label=operation, linewidth=2)
 
 # Add a horizontal line for Arkworks at 1x speedup
-plt.axhline(y=1, color='black', linestyle='--', label='Arkworks (1x)')
+plt.axhline(y=1, color='white', linestyle='--', label='Arkworks (1x)')
 
 # Add labels and title
-plt.xlabel('Threads')
-plt.ylabel('Speedup (AVX-512 relative to Arkworks)')
-plt.title('Speedup Across Threads for Different Operations')
+plt.xlabel('Threads', fontsize=12, color='white')
+plt.ylabel('Speedup (AVX-512 relative to Arkworks)', fontsize=12, color='white')
+plt.title('Speedup Across Threads for Different Operations', fontsize=16, color='white')
 
 # Set x-axis as categorical for equal spacing of thread counts
-plt.xticks(values['Threads'])
+plt.xticks(values['Threads'], color='white')
+plt.yticks(color='white')
 
-# Add a legend
-plt.legend()
+# Add a legend with white text
+plt.legend(facecolor='#333333', edgecolor='white', labelcolor='white')
+
+# Customize grid
+plt.grid(color='gray', linestyle=':', linewidth=0.5, alpha=0.5)
 
 # Show the plot
 plt.tight_layout()

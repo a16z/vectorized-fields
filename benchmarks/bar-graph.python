@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import matplotlib.font_manager as fm
+
+# Add Space Grotesk font
+fm.fontManager.addfont('/System/Library/Fonts/Supplemental/Space Grotesk.ttf')
+plt.rcParams['font.family'] = 'Space Grotesk'
 
 # Define the data with speedup factors
 data = {
@@ -30,26 +34,31 @@ operations = list(data.keys())
 x = np.arange(len(threads))  # label locations
 width = 0.2  # width of the bars
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(12, 7))
+plt.style.use('dark_background')
 
 # Plot each operation as a separate bar with a different color
 for i, (operation, values) in enumerate(data.items()):
     ax.bar(x + i * width, values['Speedup'], width, label=operation)
 
 # Add a horizontal line for Arkworks at 1x speedup
-ax.axhline(y=1, color='black', linestyle='--', label='Arkworks (1x)')
+ax.axhline(y=1, color='white', linestyle='--', label='Arkworks (1x)')
 
 # Add labels and title
-ax.set_xlabel('Threads')
-ax.set_ylabel('Speedup (AVX-512 relative to Arkworks)')
-ax.set_title('Speedup Comparison Across Operations')
+ax.set_xlabel('Threads', fontsize=12, color='white')
+ax.set_ylabel('Speedup (AVX-512 relative to Arkworks)', fontsize=12, color='white')
+ax.set_title('Speedup Comparison Across Operations', fontsize=16, color='white')
 
 # Set x-axis tick labels and locations
-ax.set_xticks(x + width)
-ax.set_xticklabels(threads)
+ax.set_xticks(x + 1.5 * width)
+ax.set_xticklabels(threads, color='white')
+plt.yticks(color='white')
 
-# Add legend
-ax.legend()
+# Add legend with white text
+ax.legend(facecolor='#333333', edgecolor='white', labelcolor='white')
+
+# Customize grid
+ax.grid(color='gray', linestyle=':', linewidth=0.5, alpha=0.5)
 
 # Show the plot
 plt.tight_layout()
