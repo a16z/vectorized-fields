@@ -6,50 +6,41 @@ plt.rcParams['font.monospace'] = 'Courier'
 
 # Define the data with speedup factors
 data = {
-    'Inner Product': {
-        'Threads': [1, 4, 8, 16, 32, 64],
-        'Speedup': [2.81, 3.07, 2.80, 2.18, 1.40, 0.65]
-    },
-    'Multiplication': {
-        'Threads': [1, 4, 8, 16, 32, 64],
-        'Speedup': [1.77, 1.82, 1.74, 1.45, 0.93, 1.17]
-    },
-    'Addition': {
-        'Threads': [1, 4, 8, 16, 32, 64],
-        'Speedup': [1.73, 1.33, 1.20, 0.95, 1.01, 1.02]
-    },
-    'Subtraction': {
-        'Threads': [1, 4, 8, 16, 32, 64],
-        'Speedup': [1.84, 1.32, 1.09, 0.94, 0.99, 1.00]
+    'Sumcheck': {
+        'Threads': [1, 2, 4, 8, 16, 32],
+        'Speedup': [1.95, 1.90, 1.87, 1.86, 1.86, 1.79]
     }
 }
 
 # Set up thread labels and the number of operations
-threads = [1, 4, 8, 16, 32, 64]
+threads = [1, 2, 4, 8, 16, 32]
 operations = list(data.keys())
 
 # Create the bar graph for each operation with a clustered bar chart
 x = np.arange(len(threads))  # label locations
-width = 0.2  # width of the bars
+width = 0.5  # width of the bars
 
 fig, ax = plt.subplots(figsize=(12, 7), facecolor='#0C0C0C')
 ax.set_facecolor('#0C0C0C')
 plt.style.use('dark_background')
 
+# Define a color map for the bars
+colors = plt.cm.viridis(np.linspace(0, 1, len(threads)))
+
 # Plot each operation as a separate bar with a different color
 for i, (operation, values) in enumerate(data.items()):
-    ax.bar(x + i * width, values['Speedup'], width, label=operation)
+    ax.bar(x + i * width, values['Speedup'], width, label=operation, color=colors)
 
 # Add a horizontal line for Arkworks at 1x speedup
 ax.axhline(y=1, color='white', linestyle='--', label='Arkworks (1x)')
 
 # Add labels and title
-ax.set_xlabel('THREADS', fontsize=12, color='white')
-ax.set_ylabel('Speedup', fontsize=12, color='white')
-ax.set_title('AVX-512 vectorized-fields Acceleration', fontsize=16, color='white', fontfamily='monospace')
+ax.set_xlabel('THREADS', fontsize=12, color='white', fontfamily='monospace')
+ax.set_ylabel('SPEEDUP', fontsize=12, color='white', fontfamily='monospace')
+ax.set_title('AVX-512 Sumcheck Acceleration', fontsize=16, color='white', fontfamily='monospace')
 
 # Set x-axis tick labels and locations
-ax.set_xticks(x + 1.5 * width)
+ax.set_xticks(x)
 ax.set_xticklabels(threads, color='white')
 plt.yticks(color='white')
 
@@ -63,5 +54,4 @@ ax.grid(color='gray', linestyle=':', linewidth=0.5, alpha=0.5)
 plt.tight_layout(pad=2.0)
 
 # Save the plot as a PNG file
-plt.savefig('bar_graph.png', dpi=300, bbox_inches='tight')
-
+plt.savefig('sumcheck_bar_graph.png', dpi=300, bbox_inches='tight')

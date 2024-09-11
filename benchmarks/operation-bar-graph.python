@@ -1,0 +1,70 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.monospace'] = 'Courier'
+
+# Define the data with speedup factors
+data = {
+    'Sum': {
+        'Threads': [1, 2, 4, 8, 16, 32],
+        'Speedup': [15.56, 15.60, 15.27, 9.64, 4.79, 2.40]
+    },
+    'Inner Product': {
+        'Threads': [1, 2, 4, 8, 16, 32],
+        'Speedup': [6.94, 5.67, 5.76, 5.80, 5.76, 3.04]
+    },
+    'Addition': {
+        'Threads': [1, 2, 4, 8, 16, 32],
+        'Speedup': [4.91, 4.41, 4.41, 2.70, 1.39, 1.06]
+    },
+    'Subtraction': {
+        'Threads': [1, 2, 4, 8, 16, 32],
+        'Speedup': [3.95, 3.55, 3.55, 2.20, 1.15, 1.04]
+    },
+    'Multiplication': {
+        'Threads': [1, 2, 4, 8, 16, 32],
+        'Speedup': [2.44, 2.44, 2.44, 2.40, 2.31, 1.25]
+    },
+}
+
+# Set up thread labels and the number of operations
+threads = [1, 2, 4, 8, 16, 32]
+operations = list(data.keys())
+
+# Create the bar graph for each operation with a clustered bar chart
+x = np.arange(len(threads))  # label locations
+width = 0.15  # width of the bars
+
+fig, ax = plt.subplots(figsize=(12, 7), facecolor='#0C0C0C')
+ax.set_facecolor('#0C0C0C')
+plt.style.use('dark_background')
+
+# Plot each operation as a separate bar with a different color
+for i, (operation, values) in enumerate(data.items()):
+    ax.bar(x + i * width, values['Speedup'], width, label=operation)
+
+# Add a horizontal line for Arkworks at 1x speedup
+ax.axhline(y=1, color='white', linestyle='--', label='Arkworks (1x)')
+
+# Add labels and title
+ax.set_xlabel('THREADS', fontsize=12, color='white', fontfamily='monospace')
+ax.set_ylabel('SPEEDUP', fontsize=12, color='white', fontfamily='monospace')
+ax.set_title('AVX-512 vectorized-fields Acceleration', fontsize=16, color='white', fontfamily='monospace')
+
+# Set x-axis tick labels and locations
+ax.set_xticks(x + 2 * width)
+ax.set_xticklabels(threads, color='white')
+plt.yticks(color='white')
+
+# Add legend with white text
+ax.legend(facecolor='#333333', edgecolor='white', labelcolor='white')
+
+# Customize grid
+ax.grid(color='gray', linestyle=':', linewidth=0.5, alpha=0.5)
+
+# Add padding around the plot
+plt.tight_layout(pad=2.0)
+
+# Save the plot as a PNG file
+plt.savefig('operation_bar_graph.png', dpi=300, bbox_inches='tight')

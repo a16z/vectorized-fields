@@ -34,8 +34,14 @@ All operations are suffixed with `_bn254`.
 
 These operations use AVX-512 instructions for efficiency.
 
-## Benchmarks (C5-metal)
-*Note that the acceleration decreases with the number of threads as RAM gets saturated.*
-![Bar Graph](./benchmarks/bar_graph.png)
+## Benchmarks 
+> [!NOTE]
+> Benchmarks performed on an AWS c7a.8xlarge instance.
 
-![Line Graph](./benchmarks/line_graph.png)
+![Bar Graph](./benchmarks/operation_bar_graph.png)
+
+![Sumcheck Graph](./benchmarks/sumcheck_bar_graph.png)*[sragss/gpu-sumcheck](https://github.com/sragss/gpu-sumcheck) at 6971f52*
+
+
+## Future
+Please get in touch with [@samrags_](https://x.com/samrags_) if you'd like specific changes or are curious if this works with your workload.

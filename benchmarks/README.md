@@ -1,0 +1,1 @@
+*Note: The C5-metal benchmarks are out of date. C5-metal also uses hyperthreading meaning the AVX-512 cores are shared between virtual CPUs.*
