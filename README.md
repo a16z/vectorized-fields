@@ -15,10 +15,10 @@ All operations are suffixed with `_bn254`.
 ## Benchmarks
 
 ### Line Graph
-![Line Graph](line_graph.png)
+![Line Graph](./benchmarks/line_graph.png)
 
 ### Bar Graph
-![Bar Graph](bar_graph.png)
+![Bar Graph](./benchmarks/bar_graph.png)
 
 ## License
 
