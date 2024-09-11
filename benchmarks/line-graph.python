@@ -1,0 +1,47 @@
+import matplotlib.pyplot as plt
+
+# Define the data with speedup factors for each operation
+data = {
+    'Multiplication': {
+        'Threads': ['1', '4', '8', '16', '32', '64'],
+        'Speedup': [1.77, 1.82, 1.74, 1.45, 0.93, 1.17]
+    },
+    'Inner Product': {
+        'Threads': ['1', '4', '8', '16', '32', '64'],
+        'Speedup': [2.81, 3.07, 2.80, 2.18, 1.40, 0.65]
+    },
+    'Vector Addition': {
+        'Threads': ['1', '4', '8', '16', '32', '64'],
+        'Speedup': [1.73, 1.33, 1.20, 0.95, 1.01, 1.02]
+    },
+    'Subtraction': {
+        'Threads': ['1', '4', '8', '16', '32', '64'],
+        'Speedup': [1.84, 1.32, 1.09, 0.94, 0.99, 1.00]
+    }
+}
+
+# Set up the figure
+plt.figure(figsize=(10, 6))
+
+# Plot each operation's speedup as a line on the same chart
+for operation, values in data.items():
+    plt.plot(values['Threads'], values['Speedup'], marker='o', label=operation)
+
+# Add a horizontal line for Arkworks at 1x speedup
+plt.axhline(y=1, color='black', linestyle='--', label='Arkworks (1x)')
+
+# Add labels and title
+plt.xlabel('Threads')
+plt.ylabel('Speedup (AVX-512 relative to Arkworks)')
+plt.title('Speedup Across Threads for Different Operations')
+
+# Set x-axis as categorical for equal spacing of thread counts
+plt.xticks(values['Threads'])
+
+# Add a legend
+plt.legend()
+
+# Show the plot
+plt.tight_layout()
+plt.show()
+
