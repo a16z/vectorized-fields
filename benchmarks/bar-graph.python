@@ -58,7 +58,9 @@ ax.legend(facecolor='#333333', edgecolor='white', labelcolor='white')
 # Customize grid
 ax.grid(color='gray', linestyle=':', linewidth=0.5, alpha=0.5)
 
-# Show the plot
-plt.tight_layout()
-plt.show()
+# Add padding around the plot
+plt.tight_layout(pad=2.0)
+
+# Save the plot as a PNG file
+plt.savefig('bar_graph.png', dpi=300, bbox_inches='tight')
 
