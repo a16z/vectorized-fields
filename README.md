@@ -14,23 +14,13 @@ All operations are suffixed with `_bn254`.
 
 ## Elementwise Vector Operations
 
-The library performs elementwise operations on vectors. For example:
-
-### Multiplication
-
-For vectors $\mathbf{x} = \begin{pmatrix} x_0 \\ x_1 \\ x_2 \\ x_3 \end{pmatrix}$ and $\mathbf{y} = \begin{pmatrix} y_0 \\ y_1 \\ y_2 \\ y_3 \end{pmatrix}$, 
-
-the elementwise multiplication is:
+The library performs elementwise operations on vectors:
 
 $\mathbf{z} = \mathbf{x} \odot \mathbf{y} = \begin{pmatrix} x_0 \cdot y_0 \\ x_1 \cdot y_1 \\ x_2 \cdot y_2 \\ x_3 \cdot y_3 \end{pmatrix}$
 
-### Addition
-
-Similarly, for addition:
-
 $\mathbf{z} = \mathbf{x} + \mathbf{y} = \begin{pmatrix} x_0 + y_0 \\ x_1 + y_1 \\ x_2 + y_2 \\ x_3 + y_3 \end{pmatrix}$
 
-These operations are performed efficiently using AVX-512 instructions on larger vectors.
+These operations use AVX-512 instructions for efficiency.
 
 ## Benchmarks (C5-metal)
 *Note that the acceleration decreases with the number of threads as RAM gets saturated.*
