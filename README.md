@@ -1,6 +1,25 @@
 # vectorized-fields
 
-Vectorized AVX-512 256-bit arithmetic library focused on BN254 field vector operations. Boasts 1-3x speedups over plain CPU arithmetic.
+Vectorized AVX-512 256-bit arithmetic library focused on BN254 field vector operations with Rust bindings. Boasts 1-3x speedups over plain CPU arithmetic.
+
+The library performs elementwise operations on vectors:
+
+$$
+\mathbf{z} = \mathbf{x} \odot \mathbf{y} = \begin{pmatrix} x_0 \cdot y_0 \\ x_1 \cdot y_1 \\ x_2 \cdot y_2 \\ x_3 \cdot y_3 \end{pmatrix}
+$$
+
+$$
+\mathbf{z} = \mathbf{x} + \mathbf{y} = \begin{pmatrix} x_0 + y_0 \\ x_1 + y_1 \\ x_2 + y_2 \\ x_3 + y_3 \end{pmatrix}
+$$
+
+$$
+\mathbf{z} = \mathbf{x} - \mathbf{y} = \begin{pmatrix} x_0 - y_0 \\ x_1 - y_1 \\ x_2 - y_2 \\ x_3 - y_3 \end{pmatrix}
+$$
+
+$$
+z = \mathbf{x} \cdot \mathbf{y} = \begin{pmatrix} x_0 \\ x_1 \\ x_2 \\ x_3 \end{pmatrix} \cdot \begin{pmatrix} y_0 \\ y_1 \\ y_2 \\ y_3 \end{pmatrix} = x_0 \cdot y_0 + x_1 \cdot y_1 + x_2 \cdot y_2 + x_3 \cdot y_3
+$$
+
 
 ## Features
 
@@ -12,13 +31,6 @@ This library provides optimized vector operations for BN254 field arithmetic, le
 
 All operations are suffixed with `_bn254`.
 
-## Elementwise Vector Operations
-
-The library performs elementwise operations on vectors:
-
-$\mathbf{z} = \mathbf{x} \odot \mathbf{y} = \begin{pmatrix} x_0 \cdot y_0 \\ x_1 \cdot y_1 \\ x_2 \cdot y_2 \\ x_3 \cdot y_3 \end{pmatrix}$
-
-$\mathbf{z} = \mathbf{x} + \mathbf{y} = \begin{pmatrix} x_0 + y_0 \\ x_1 + y_1 \\ x_2 + y_2 \\ x_3 + y_3 \end{pmatrix}$
 
 These operations use AVX-512 instructions for efficiency.
 
