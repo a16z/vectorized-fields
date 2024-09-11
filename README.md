@@ -12,14 +12,8 @@ This library provides optimized vector operations for BN254 field arithmetic, le
 
 All operations are suffixed with `_bn254`.
 
-## Benchmarks
-
-### Line Graph
-![Line Graph](./benchmarks/line_graph.png)
-
-### Bar Graph
+## Benchmarks (C5-metal)
+*Note that the acceleration decreases with the number of threads as RAM gets saturated.*
 ![Bar Graph](./benchmarks/bar_graph.png)
 
-## License
-
-[MIT License](LICENSE)
+![Line Graph](./benchmarks/line_graph.png)
