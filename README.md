@@ -1,6 +1,6 @@
 # vectorized-fields
 
-A vector 256-bit arithmetic library focused on BN254 field operations.
+Vectorized AVX-512 256-bit arithmetic library focused on BN254 field vector operations. Boasts 1-3x speedups over plain CPU arithmetic.
 
 ## Features
 
