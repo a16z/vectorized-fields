@@ -17,6 +17,8 @@ mod utils;
 
 use crate::assembly::{modadd256, modip256_mont, modmul256_mont, modsub256, modsum256};
 
+const PAR_CHUNK_SIZE: usize = 128;
+
 pub fn add_vec_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
     assert_eq!(x.len(), y.len());
 
@@ -36,8 +38,7 @@ pub fn add_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
     assert_eq!(y.len(), len);
     assert_eq!(z.len(), len);
 
-    let num_threads = rayon::current_num_threads();
-    let chunk_size = len / num_threads;
+    let chunk_size = std::cmp::min(len, PAR_CHUNK_SIZE);
 
     x.par_chunks(chunk_size)
         .zip(y.par_chunks(chunk_size))
@@ -80,8 +81,7 @@ pub fn sub_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
     assert_eq!(y.len(), len);
     assert_eq!(z.len(), len);
 
-    let num_threads = rayon::current_num_threads();
-    let chunk_size = len / num_threads;
+    let chunk_size = std::cmp::min(len, PAR_CHUNK_SIZE);
 
     x.par_chunks(chunk_size)
         .zip(y.par_chunks(chunk_size))
@@ -123,7 +123,7 @@ pub fn sum_vec_bn254(x: &[Fr]) -> Fr {
 }
 
 pub fn sum_vec_par_bn254(x: &[Fr]) -> Fr {
-    let chunk_size = x.len() / rayon::current_num_threads();
+    let chunk_size = std::cmp::min(x.len(), PAR_CHUNK_SIZE);
 
     x.par_chunks(chunk_size)
         .map(|chunk_x| sum_vec_bn254(chunk_x))
@@ -155,8 +155,7 @@ pub fn mul_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
     assert_eq!(y.len(), len);
     assert_eq!(z.len(), len);
 
-    let num_threads = rayon::current_num_threads();
-    let chunk_size = len / num_threads;
+    let chunk_size = std::cmp::min(len, PAR_CHUNK_SIZE);
 
     x.par_chunks(chunk_size)
         .zip(y.par_chunks(chunk_size))
@@ -209,7 +208,7 @@ pub fn inner_product_bn254(x: &[Fr], y: &[Fr]) -> Fr {
 
 pub fn inner_product_par_bn254(x: &[Fr], y: &[Fr]) -> Fr {
     assert_eq!(x.len(), y.len());
-    let chunk_size = x.len() / rayon::current_num_threads();
+    let chunk_size = std::cmp::min(x.len(), PAR_CHUNK_SIZE);
 
     x.par_chunks(chunk_size)
         .zip(y.par_chunks(chunk_size))
