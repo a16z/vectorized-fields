@@ -5,19 +5,19 @@ Vectorized AVX-512 256-bit arithmetic library focused on BN254 field vector oper
 The library performs elementwise operations on vectors:
 
 $$
-\mathbf{z} = \mathbf{x} \odot \mathbf{y} = \begin{pmatrix} x_0 \cdot y_0 \\ x_1 \cdot y_1 \\ x_2 \cdot y_2 \\ x_3 \cdot y_3 \end{pmatrix}
+\mathbf{z} = \mathbf{x} \odot \mathbf{y} = \begin{bmatrix} x_0 \cdot y_0 \\ x_1 \cdot y_1 \\ x_2 \cdot y_2 \\ x_3 \cdot y_3 \end{bmatrix}
 $$
 
 $$
-\mathbf{z} = \mathbf{x} + \mathbf{y} = \begin{pmatrix} x_0 + y_0 \\ x_1 + y_1 \\ x_2 + y_2 \\ x_3 + y_3 \end{pmatrix}
+\mathbf{z} = \mathbf{x} + \mathbf{y} = \begin{bmatrix} x_0 + y_0 \\ x_1 + y_1 \\ x_2 + y_2 \\ x_3 + y_3 \end{bmatrix}
 $$
 
 $$
-\mathbf{z} = \mathbf{x} - \mathbf{y} = \begin{pmatrix} x_0 - y_0 \\ x_1 - y_1 \\ x_2 - y_2 \\ x_3 - y_3 \end{pmatrix}
+\mathbf{z} = \mathbf{x} - \mathbf{y} = \begin{bmatrix} x_0 - y_0 \\ x_1 - y_1 \\ x_2 - y_2 \\ x_3 - y_3 \end{bmatrix}
 $$
 
 $$
-z = \mathbf{x} \cdot \mathbf{y} = \begin{pmatrix} x_0 \\ x_1 \\ x_2 \\ x_3 \end{pmatrix} \cdot \begin{pmatrix} y_0 \\ y_1 \\ y_2 \\ y_3 \end{pmatrix} = x_0 \cdot y_0 + x_1 \cdot y_1 + x_2 \cdot y_2 + x_3 \cdot y_3
+z = \mathbf{x} \cdot \mathbf{y} = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ x_3 \end{bmatrix} \cdot \begin{bmatrix} y_0 \\ y_1 \\ y_2 \\ y_3 \end{bmatrix} = x_0 \cdot y_0 + x_1 \cdot y_1 + x_2 \cdot y_2 + x_3 \cdot y_3
 $$
 
 
