@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
 plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.monospace'] = 'Courier'
 
 # Define the data with speedup factors for each operation
 data = {
@@ -36,9 +37,9 @@ for operation, values in data.items():
 plt.axhline(y=1, color='white', linestyle='--', label='Arkworks (1x)')
 
 # Add labels and title
-plt.xlabel('Threads', fontsize=12, color='white')
-plt.ylabel('Speedup (AVX-512 relative to Arkworks)', fontsize=12, color='white')
-plt.title('Speedup Across Threads for Different Operations', fontsize=16, color='white')
+plt.xlabel('THREADS', fontsize=12, color='white')
+plt.ylabel('Speedup', fontsize=12, color='white')
+plt.title('AVX-512 vectorized-fields Acceleration', fontsize=16, color='white', fontfamily='monospace')
 
 # Set x-axis as categorical for equal spacing of thread counts
 plt.xticks(values['Threads'], color='white')

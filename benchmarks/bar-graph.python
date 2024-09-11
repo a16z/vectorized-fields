@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.monospace'] = 'Courier'
 
 # Define the data with speedup factors
 data = {
@@ -43,9 +44,9 @@ for i, (operation, values) in enumerate(data.items()):
 ax.axhline(y=1, color='white', linestyle='--', label='Arkworks (1x)')
 
 # Add labels and title
-ax.set_xlabel('Threads', fontsize=12, color='white')
-ax.set_ylabel('Speedup (AVX-512 relative to Arkworks)', fontsize=12, color='white')
-ax.set_title('Speedup Comparison Across Operations', fontsize=16, color='white')
+ax.set_xlabel('THREADS', fontsize=12, color='white')
+ax.set_ylabel('Speedup', fontsize=12, color='white')
+ax.set_title('AVX-512 vectorized-fields Acceleration', fontsize=16, color='white', fontfamily='monospace')
 
 # Set x-axis tick labels and locations
 ax.set_xticks(x + 1.5 * width)
