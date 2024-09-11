@@ -24,7 +24,8 @@ data = {
 }
 
 # Set up the figure with dark background
-plt.figure(figsize=(12, 7))
+fig, ax = plt.subplots(figsize=(12, 7), facecolor='#0C0C0C')
+ax.set_facecolor('#0C0C0C')
 plt.style.use('dark_background')
 
 # Plot each operation's speedup as a line on the same chart

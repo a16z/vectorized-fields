@@ -34,7 +34,8 @@ operations = list(data.keys())
 x = np.arange(len(threads))  # label locations
 width = 0.2  # width of the bars
 
-fig, ax = plt.subplots(figsize=(12, 7))
+fig, ax = plt.subplots(figsize=(12, 7), facecolor='#0C0C0C')
+ax.set_facecolor('#0C0C0C')
 plt.style.use('dark_background')
 
 # Plot each operation as a separate bar with a different color
