@@ -1,10 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.font_manager as fm
 
-# Add Space Grotesk font
-fm.fontManager.addfont('/System/Library/Fonts/Supplemental/Space Grotesk.ttf')
-plt.rcParams['font.family'] = 'Space Grotesk'
+plt.rcParams['font.family'] = 'Helvetica'
 
 # Define the data with speedup factors
 data = {
