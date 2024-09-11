@@ -47,6 +47,20 @@ pub fn add_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
         });
 }
 
+pub fn add_vec_inplace_bn254(x: &mut [Fr], y: &[Fr]) {
+    assert_eq!(x.len(), y.len());
+
+    unsafe {
+        modadd256(
+            x.as_mut_ptr() as *mut u64,
+            x.as_ptr() as *const u64,
+            y.as_ptr() as *const u64,
+            x.len() as u64,
+            constants::BN254_FR.as_ptr(),
+        )
+    }
+}
+
 pub fn sub_vec_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
     assert_eq!(x.len(), y.len());
 
@@ -75,6 +89,20 @@ pub fn sub_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
         .for_each(|((x_chunk, y_chunk), z_chunk)| {
             sub_vec_bn254(x_chunk, y_chunk, z_chunk);
         });
+}
+
+pub fn sub_vec_inplace_bn254(x: &mut [Fr], y: &[Fr]) {
+    assert_eq!(x.len(), y.len());
+
+    unsafe {
+        modsub256(
+            x.as_mut_ptr() as *mut u64,
+            x.as_ptr() as *const u64,
+            y.as_ptr() as *const u64,
+            x.len() as u64,
+            constants::BN254_FR.as_ptr(),
+        )
+    }
 }
 
 pub fn sum_vec_bn254(x: &[Fr]) -> Fr {
@@ -136,6 +164,25 @@ pub fn mul_vec_par_bn254(x: &[Fr], y: &[Fr], z: &mut [Fr]) {
         .for_each(|((xi, yi), zi)| {
             mul_vec_bn254(xi, yi, zi);
         });
+}
+
+pub fn mul_vec_inplace_bn254(x: &mut [Fr], y: &[Fr]) {
+    let len = x.len();
+    assert_eq!(len, y.len());
+
+    let simd_x = x.as_ptr() as *const u64;
+    let simd_y = y.as_ptr() as *const u64;
+    let simd_z = x.as_mut_ptr() as *mut u64;
+
+    unsafe {
+        modmul256_mont(
+            simd_z,
+            simd_x,
+            simd_y,
+            len as u64,
+            constants::BN254_FR.as_ptr(),
+        );
+    }
 }
 
 pub fn inner_product_bn254(x: &[Fr], y: &[Fr]) -> Fr {
