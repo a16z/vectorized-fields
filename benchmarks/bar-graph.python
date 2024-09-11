@@ -6,15 +6,15 @@ plt.rcParams['font.monospace'] = 'Courier'
 
 # Define the data with speedup factors
 data = {
-    'Multiplication': {
-        'Threads': [1, 4, 8, 16, 32, 64],
-        'Speedup': [1.77, 1.82, 1.74, 1.45, 0.93, 1.17]
-    },
     'Inner Product': {
         'Threads': [1, 4, 8, 16, 32, 64],
         'Speedup': [2.81, 3.07, 2.80, 2.18, 1.40, 0.65]
     },
-    'Vector Addition': {
+    'Multiplication': {
+        'Threads': [1, 4, 8, 16, 32, 64],
+        'Speedup': [1.77, 1.82, 1.74, 1.45, 0.93, 1.17]
+    },
+    'Addition': {
         'Threads': [1, 4, 8, 16, 32, 64],
         'Speedup': [1.73, 1.33, 1.20, 0.95, 1.01, 1.02]
     },
